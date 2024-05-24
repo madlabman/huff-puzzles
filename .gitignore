@@ -17,3 +17,8 @@ solutions/
 src2/
 
 .DS_Store
+
+__TEMP__*
+
+tags
+
