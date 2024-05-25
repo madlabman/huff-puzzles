@@ -37,7 +37,7 @@ SUM:
     0x24                            // [pointer, sum]
 LOOP:
     0x20 add dup1                   // [pointer, pointer, sum]
-    calldatasize lt RETURN jumpi    // [pointer, sum]
+    calldatasize eq RETURN jumpi    // [pointer, sum]
     swap1 dup2                      // [pointer, sum, pointer]
     calldataload add                // [sum, pointer]
     swap1 LOOP jump                 // [pointer, sum]

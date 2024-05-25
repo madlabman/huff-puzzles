@@ -27,7 +27,7 @@ MAX:
     0x24                            // [pointer, max]
 LOOP:
     0x20 add dup1                   // [pointer, pointer, max]
-    calldatasize lt RETURN jumpi    // [pointer, max]
+    calldatasize eq RETURN jumpi    // [pointer, max]
     swap1 dup2                      // [pointer, max, pointer]
     calldataload                    // [next, max, pointer]
     dup2 dup2                       // [next, max, next, max, pointer]
