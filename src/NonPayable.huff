@@ -9,7 +9,7 @@
  */
 
 #define macro MAIN() = takes(0) returns(0) {
-    callvalue RETURN jumpi
+    callvalue iszero RETURN jumpi
     0x00 0x00 revert
 RETURN:
     0x00 0x00 return
