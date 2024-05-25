@@ -1,7 +1,6 @@
- 
-/** 
+/**
  *  DISTRIBUTE HUFF EXERCISE
- *  
+ *
  *  The task is to enable this contract, when called with function `distribute(address[])` to
  *  distribute the value sent with the call to each address in the address array as evenly.
  *  Revert if array length is 0
@@ -10,9 +9,48 @@
  *  NOTICE: The contract should revert when an unrecognized function is called
  */
 
- #define function distribute(address[]) payable returns()
+#define function distribute(address[]) payable returns()
 
 
- #define macro MAIN() = takes(0) returns(0) {
-   
- }
+#define macro MAIN() = takes(0) returns(0) {
+    0x00 calldataload 0xe0 shr
+    __FUNC_SIG(distribute) eq DISTRIBUTE jumpi
+    0x00 0x00 revert
+
+DISTRIBUTE:
+    __DISTRIBUTE()
+}
+
+#define macro __DISTRIBUTE() = takes(0) returns(0) {
+    0x24 calldataload dup1          // [len, len]
+    iszero FAIL jumpi               // [len]
+    callvalue div                   // [amount]
+
+    0x24                            // [pointer, amount]
+LOOP:
+    0x20 add dup1                   // [pointer, pointer, amount]
+    dup1 calldatasize eq STOP jumpi // [pointer, pointer, amount]
+    calldataload                    // [to, pointer, amount]
+    dup3                            // [amount, to, pointer, amount]
+    __TRANSFER()                    // [pointer, amount]
+    LOOP jump
+
+STOP:
+    stop
+
+FAIL:
+    0x00 0x00 revert
+}
+
+#define macro __TRANSFER() = takes(2) returns(0) {
+    // [amount, to]
+
+    0x00 0x00 0x00 0x00     // [0x00, 0x00, 0x00, 0x00, amount, to]
+    swap4 swap1 swap5       // [to, amount, 0x00, 0x00, 0x00, 0x00]
+    gas call
+    OKAY jumpi
+    0x00 0x00 revert
+
+OKAY:
+}
+

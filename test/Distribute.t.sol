@@ -42,15 +42,11 @@ contract DistributeTest is Test, NonMatchingSelectorHelper {
         // also subtract 3 to account for the other assumes below
         vm.assume(receivers.length < (2 ** 16 / precompiles_and_foundry_helper_addresses.length) - 3);
         assume_not_precompile_or_foundry_helper_address(receivers);
+        assume_not_contract(receivers);
 
         distributor.distribute{value: value}(receivers);
         for (uint256 i; i < receivers.length; ++i) {
-            uint256 size;
             address receiver = receivers[i];
-            assembly {
-                size := extcodesize(receiver)
-            }
-            vm.assume(size == 0);
             assertGe(receiver.balance, value / receivers.length, "Wrong balance of receiver");
         }
     }
@@ -69,6 +65,18 @@ contract DistributeTest is Test, NonMatchingSelectorHelper {
             for (uint256 j; j < precompiles_and_foundry_helper_addresses.length; ++j) {
                 vm.assume(addresses[i] != precompiles_and_foundry_helper_addresses[j]);
             }
+        }
+    }
+
+    function assume_not_contract(address[] memory addresses) private view {
+        uint256 size;
+
+        for (uint256 i; i < addresses.length; ++i) {
+            address receiver = addresses[i];
+            assembly {
+                size := extcodesize(receiver)
+            }
+            vm.assume(size == 0);
         }
     }
 }
