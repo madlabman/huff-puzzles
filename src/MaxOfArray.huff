@@ -1,7 +1,6 @@
-
-/** 
+/**
  *  MAX_OF_ARRAY HUFF EXERCISE
- *  
+ *
  *  In this task, Given an abi encoded array of uint256, return its maximum value. Revert if the array is empty.
  *
  *  NOTICE: The contract should revert when an unrecognized function is called
@@ -10,5 +9,37 @@
 #define function maxOfArray(uint256[]) payable returns(uint256)
 
 #define macro MAIN() = takes(0) returns(0) {
-   
+    0x00 calldataload 0xe0 shr
+    __FUNC_SIG(maxOfArray) eq MAX jumpi
+    0x00 0x00 revert
+MAX:
+    __MAX()
+}
+
+#define macro __MAX() = takes(0) returns(0) {
+    0x24 calldataload
+    iszero FAIL jumpi
+
+    // if a > b ? a : b => (a > b)a + !(a > b)b,
+    // where a -> next, b -> max
+
+    0x00                            // [max]
+    0x24                            // [pointer, max]
+LOOP:
+    0x20 add dup1                   // [pointer, pointer, max]
+    calldatasize lt RETURN jumpi    // [pointer, max]
+    swap1 dup2                      // [pointer, max, pointer]
+    calldataload                    // [next, max, pointer]
+    dup2 dup2                       // [next, max, next, max, pointer]
+    gt dup1 iszero                  // [!gt, gt, next, max, pointer]
+    swap2 mul                       // [a, !gt, max, pointer]
+    swap2 mul                       // [b, a, pointer]
+    add                             // [max, pointer]
+    swap1 LOOP jump                 // [pointer, max]
+RETURN:
+    pop
+    0x00 mstore
+    0x20 0x00 return
+FAIL:
+    0x00 0x00 revert
 }
