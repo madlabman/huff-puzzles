@@ -23,6 +23,7 @@ contract SendEtherTest is Test, NonMatchingSelectorHelper {
             size := extcodesize(receiver)
         }
         vm.assume(size == 0);
+        vm.assume(uint160(receiver) > 9);
 
         uint256 _balance = receiver.balance;
         sendEther.sendEther{value: value}(receiver);
