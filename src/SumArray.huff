@@ -1,8 +1,7 @@
-
-/** 
+/**
  *  SUM_ARRAY HUFF EXERCISE
  *
- *  
+ *
  *  The task is to write within the `MAIN` macro below, write a functionality that takes an array of uint256 as an argument and returns the sum of all the numbers
  *
  *  NOTICE: The contract should revert when an unrecognized function is called
@@ -12,5 +11,38 @@
 
 
 #define macro MAIN() = takes(0) returns(0) {
+    0x00 calldataload 0xe0 shr
+    __FUNC_SIG(sumArray) eq SUM jumpi
+    0x00 0x00 revert
+SUM:
+    __SUM()
+}
 
+// #define macro __SUM() = takes(0) returns(0) {
+//     0x44                        // [pointer]
+//     0x00                        // [sum, pointer]
+// LOOP:
+//     dup2                        // [pointer, sum, pointer]
+//     calldataload add            // [sum, pointer]
+//     swap1 0x20 add              // [pointer, sum]
+//     swap1                       // [sum, pointer]
+//     dup2                        // [pointer, sum, pointer]
+//     calldatasize gt LOOP jumpi  // [sum, pointer]
+//     0x00 mstore pop             // []
+//     0x20 0x00 return
+// }
+
+#define macro __SUM() = takes(0) returns(0) {
+    0x00                            // [sum]
+    0x24                            // [pointer, sum]
+LOOP:
+    0x20 add dup1                   // [pointer, pointer, sum]
+    calldatasize lt RETURN jumpi    // [pointer, sum]
+    swap1 dup2                      // [pointer, sum, pointer]
+    calldataload add                // [sum, pointer]
+    swap1 LOOP jump                 // [pointer, sum]
+RETURN:
+    pop
+    0x00 mstore
+    0x20 0x00 return
 }
