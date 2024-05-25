@@ -44,3 +44,4 @@ DEPLOY:
     0x20 0x00 return
 }
 
+// vim: ft=c

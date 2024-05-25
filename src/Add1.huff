@@ -46,3 +46,4 @@
         revert
 }
 
+// vim: ft=c

@@ -17,3 +17,5 @@
     0x00
     return
 }
+
+// vim: ft=c

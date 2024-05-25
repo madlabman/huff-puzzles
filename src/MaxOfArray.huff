@@ -43,3 +43,5 @@ RETURN:
 FAIL:
     0x00 0x00 revert
 }
+
+// vim: ft=c

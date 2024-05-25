@@ -16,3 +16,5 @@
     __ERROR(OnlyHuff) 0x00 mstore
     0x04 0x00 revert
 }
+
+// vim: ft=c

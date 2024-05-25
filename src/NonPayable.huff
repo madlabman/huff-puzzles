@@ -15,3 +15,4 @@ RETURN:
     0x00 0x00 return
 }
 
+// vim: ft=c

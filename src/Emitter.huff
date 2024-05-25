@@ -27,3 +27,5 @@ VALUE:
     __EVENT_HASH(Value)         // [topic0, a]
     0x20 0x00 log2
 }
+
+// vim: ft=c
