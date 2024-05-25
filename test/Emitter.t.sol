@@ -18,10 +18,10 @@ contract EmitterTest is Test, NonMatchingSelectorHelper {
         emitter = Emitter(HuffDeployer.config().deploy("Emitter"));
     }
 
-    function testEmitter() public {
-        vm.expectEmit(true, true, false, true);
-        emit Value(42, 24);
-        emitter.value(42, 24);
+    function testEmitter(uint256 a, uint256 b) public {
+        vm.expectEmit(true, true, true, true);
+        emit Value(a, b);
+        emitter.value(a, b);
     }
 
     /// @notice Test that a non-matching selector reverts
