@@ -1,7 +1,6 @@
- 
-/** 
+/**
  *  CREATE HUFF EXERCISE
- *  
+ *
  *  The task is to deploy this contract with a function `makeContract()` which when called creates a contract
  *  that when called with any data returns `0xcaffe`.
  *  The call to `makeContract` should return the address of the newly created contract.
@@ -9,9 +8,39 @@
  *  NOTICE: The contract should revert when an unrecognized function is called
  */
 
- #define function makeContract() payable returns(address)
+#define function makeContract() payable returns(address)
 
 
- #define macro MAIN() = takes(0) returns(0) {
-    
- }
+#define constant BYTECODE = 0x69620caffe5f5260205ff35f52600a6016f3
+
+// PUSH3 0x0caffe
+// PUSH0
+// MSTORE
+// PUSH1 0x20
+// PUSH0
+// RETURN
+
+// 0x69620caffe5f5260205ff35f52600a6016f3
+
+// PUSH10 [^^^]
+// PUSH0
+// MSTORE
+// PUSH1 0x0a
+// PUSH1 0x16
+// RETURN
+
+#define macro MAIN() = takes(0) returns(0) {
+    0x00 calldataload 0xe0 shr
+    __FUNC_SIG(makeContract) eq DEPLOY jumpi
+    0x00 0x00 revert
+DEPLOY:
+    __DEPLOY()
+}
+
+#define macro __DEPLOY() = takes(0) returns(0) {
+    [BYTECODE] 0x00 mstore
+    0x12 0x0e 0x00 create
+    0x00 mstore
+    0x20 0x00 return
+}
+
