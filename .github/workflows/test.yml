@@ -1,6 +1,11 @@
-name: test
+---
+name: Tests
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 env:
   FOUNDRY_PROFILE: ci
@@ -10,7 +15,7 @@ jobs:
     strategy:
       fail-fast: true
 
-    name: Foundry project
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,16 +27,13 @@ jobs:
         with:
           version: nightly
 
-      - name: Install huff
-        run: cargo install --git https://github.com/huff-language/huff-rs.git huff_cli --bins --locked
-
-      - name: Run Forge build
+      - name: Install Huff
         run: |
-          forge --version
-          forge build --sizes
-        id: build
+          echo "${HOME}/.huff/bin" >> "$GITHUB_PATH"
+          curl -L get.huff.sh | bash
+          "$HOME/.huff/bin/huffup"
 
-      - name: Run Forge tests
+      - name: Run Foundry tests
         run: |
           forge test -vvv
         id: test

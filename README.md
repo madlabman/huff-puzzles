@@ -1,5 +1,7 @@
 # huff-puzzles by [RareSkills](https://www.rareskills.io)
 
+[![Tests](https://github.com/madlabman/huff-puzzles/actions/workflows/test.yml/badge.svg)](https://github.com/madlabman/huff-puzzles/actions/workflows/test.yml)
+
 A series of puzzles that go from very easy to more difficult so that you can have a hands-on introduction to the [huff language](https://huff.sh) and learn EVM bytecode while doing it.
 
 ## Pre-requisites
