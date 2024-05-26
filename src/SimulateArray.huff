@@ -23,6 +23,9 @@
 #define error OutOfBounds()
 #define error ZeroArray()
 
+#define constant SLOT = 0x00
+#define constant ADDR = 0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563 // cast keccak [SLOT]
+
 #define macro MAIN() = takes(0) returns(0) {
     0x00 calldataload 0xe0 shr
     dup1 __FUNC_SIG(length) eq LENGTH jumpi
@@ -51,14 +54,14 @@ LENGTH:
 }
 
 #define macro __LEN() = takes(0) returns(1) {
-    0x00 sload
+    [SLOT] sload
 }
 
 #define macro __POPP() = takes(0) returns(0) {
     __LEN()                         // [len]
     dup1 iszero FAIL jumpi          // [len]
     0x01 swap1 sub                  // [len-1]
-    0x00 sstore
+    [SLOT] sstore
     stop
 
 FAIL:
@@ -77,7 +80,7 @@ FAIL:
 __WRITE_0:
     0x24 calldataload               // [num]
     0x04 calldataload               // [index, num]
-    0x20 add                        // [pointer, num]
+    [ADDR] add                      // [pointer, num]
     sstore
     stop
 }
@@ -87,24 +90,22 @@ __WRITE_0:
     dup1                            // [len, len]
 
     0x04 calldataload               // [num, len, len]
-    swap1 0x20 add sstore           // [len]
+    swap1 [ADDR] add sstore         // [len]
     0x01 add 0x00 sstore
 
     stop
 }
 
 #define macro __READ() = takes(0) returns(0) {
-    __LEN()                         // [len]
-
-    0x04 calldataload               // [index, len]
+    0x04 calldataload               // [index]
+    __LEN() dup2                    // [index, len, index]
     lt __READ_0 jumpi
 
     __ERROR(OutOfBounds) 0x00 mstore
     0x04 0x00 revert
 
 __READ_0:
-    0x04 calldataload
-    0x20 add sload
+    [ADDR] add sload
     0x00 mstore
     0x20 0x00 return
 }
